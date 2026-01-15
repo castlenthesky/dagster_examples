@@ -1,0 +1,9 @@
+.venv/
+.coverage/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.vscode/
+.env*
+!.env.EXAMPLE
+!.env.example
