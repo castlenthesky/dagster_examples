@@ -1,4 +1,4 @@
-# dagster.yaml
+# dagster.yaml for the webserver and daemon
 
 telemetry:
   enabled: false
@@ -23,4 +23,3 @@ schedule_storage:
   config:
     postgres_url:
       env: DAGSTER_DATABASE_URL
-

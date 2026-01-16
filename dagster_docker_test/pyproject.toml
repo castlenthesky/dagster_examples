@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "dagster>=1.11.4",
+  "dagster-docker>=0.28.11",
+  "dagster-postgres>=0.28.11",
 ]
 
 

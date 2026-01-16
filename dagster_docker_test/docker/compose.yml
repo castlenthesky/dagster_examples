@@ -1,13 +1,39 @@
 name: dagster_docker_example
 
 services:
-  dagster:
+  dagster_remote_code:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+    image: dagster_docker_test:latest  # Specify the built image name for consistency
     container_name: dagster_docker_example
+    environment:
+      # Postgres connection string - must use host.docker.internal instead of localhost
+      # to access Postgres running on the host machine from within the container
+      # set DAGSTER_DATABASE_URL directly replacing localhost with host.docker.internal
+      - DAGSTER_DATABASE_URL=${DAGSTER_DATABASE_URL:-postgresql://postgres:password@host.docker.internal:5432/dagster}
+      # Ensure Dagster knows where to find the config
+      - DAGSTER_HOME=/opt/dagster/dagster_home
+      # Storage directory for I/O manager (asset outputs)
+      - DAGSTER_STORAGE_DIR=/opt/dagster/dagster_home/storage
+      # For consistent Docker run launches (if using DockerRunLauncher)
+      - DAGSTER_CURRENT_IMAGE=dagster_docker_test:latest
     ports:
-      - "4556:4000"  # gRPC server port
+      - "4556:4000"  # gRPC server port for main instance communication
     volumes:
+      # Mount storage directory for asset outputs and compute logs
+      # This allows the container to write outputs and logs that are accessible from the host
+      - ../storage:/opt/dagster/dagster_home/storage
+      # Optional: Mount source code for live development (read-only)
       - ../src:/app/src:ro
     restart: unless-stopped
+    extra_hosts:
+      # Allow container to access host services via host.docker.internal
+      # On Linux, this requires Docker 20.10+ or adding this mapping
+      - "host.docker.internal:host-gateway"
+    networks:
+      - dagster_network  # Add for isolation; optional but good practice
+
+networks:
+  dagster_network:
+    driver: bridge

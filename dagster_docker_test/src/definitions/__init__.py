@@ -1,19 +1,29 @@
 # src/dagster_definitions
 
-from dagster import Definitions, load_assets_from_modules
+import os
+from dagster import Definitions, FilesystemIOManager, asset
 
-from . import assets
 
-all_assets = load_assets_from_modules([assets])
+@asset(name="example_gRPC")
+def example_gRPC_asset():
+  print("This asset is running in a remote docker container and orchestrated via gRPC.")
+  return "Asset executed successfully"
+
 
 defs = Definitions(
-  assets=all_assets,
+  assets=[example_gRPC_asset],
+  resources={
+    # Configure I/O manager to write to a location accessible in the container
+    # This path will be used for storing asset outputs
+    "io_manager": FilesystemIOManager(
+      base_dir=os.getenv("DAGSTER_STORAGE_DIR", "/opt/dagster/dagster_home/storage")
+    ),
+  },
   schedules=[],
   sensors=[],
   jobs=[],
   executor=None,
   asset_checks=[],
-  resources={},
   loggers={},
   metadata={},
 )
