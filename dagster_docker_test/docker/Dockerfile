@@ -45,8 +45,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     DAGSTER_HOME=/opt/dagster/dagster_home \
     PATH="/app/.venv/bin:$PATH"
 
-# Create the DAGSTER_HOME directory and /app directory
-RUN mkdir -p $DAGSTER_HOME /app
+# Create the DAGSTER_HOME directory and storage subdirectories
+RUN mkdir -p $DAGSTER_HOME/storage/compute_logs /app
 
 # Copy the Dagster Instance Configuration (as root, then we'll set ownership)
 # This file MUST exist and contain the Postgres config

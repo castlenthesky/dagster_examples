@@ -21,9 +21,6 @@ services:
     ports:
       - "4556:4000"  # gRPC server port for main instance communication
     volumes:
-      # Mount storage directory for asset outputs and compute logs
-      # This allows the container to write outputs and logs that are accessible from the host
-      - ../storage:/opt/dagster/dagster_home/storage
       # Optional: Mount source code for live development (read-only)
       - ../src:/app/src:ro
     restart: unless-stopped
