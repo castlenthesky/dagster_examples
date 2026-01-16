@@ -48,6 +48,8 @@ Receive automated alerts via slack, MS Teams, discord, telegra, etc. whenever an
 - Freshness Warnings
 - Metadata Capture
 
+## Consider the Dagster cloud offering "Dagster+" for even more features!
+
 
 # Dagster Multi-Code-Location Orchestration Guide
 
