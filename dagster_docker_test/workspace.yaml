@@ -1,4 +1,0 @@
-load_from:
-  - python_module:
-      location_name: dagster_docker_example
-      module_name: src.definitions
