@@ -1,0 +1,15 @@
+name: dagster_docker_example
+
+services:
+  dagster:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: dagster_docker_example
+    ports:
+      - "4556:4000"  # gRPC server port
+    env_file:
+      - ../.env
+    volumes:
+      - ../src:/app/src:ro
+    restart: unless-stopped

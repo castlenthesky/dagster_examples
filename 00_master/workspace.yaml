@@ -1,0 +1,23 @@
+load_from:
+  - python_file:
+      location_name: example_local_file
+      relative_path: src/definitions/single_file.py
+      working_directory: /home/bmoney/projects/integrations/00_master # Path to your project root
+      executable_path: /home/bmoney/projects/integrations/00_master/.venv/bin/python # Path to the environment's executable
+#      attribute: my_defs # Add if Definitions is a named variable (e.g., my_defs = Definitions(...))
+  - python_module:
+      location_name: example_local_module
+      module_name: src.definitions
+#      working_directory: /home/bmoney/projects/integrations/00_master # Path to your project root - optional when calling from the same project
+#      executable_path: /home/bmoney/projects/integrations/00_master/.venv/bin/python # Path to the environment's executable - optional when calling from the same project
+#      attribute: my_defs # Add if Definitions is a named variable (e.g., my_defs = Definitions(...))
+  - python_package:
+      location_name: example_remote_package
+      package_name: src.definitions  # Dot separated path to the package with the root definitions object
+      working_directory: /home/bmoney/projects/integrations/dagster_remote_test/ # Path to your project root
+      executable_path: /home/bmoney/projects/integrations/dagster_remote_test/.venv/bin/python # Path to the environment's executable
+#      attribute: my_defs # Add if Definitions is a named variable (e.g., my_defs = Definitions(...))
+  - grpc_server:
+     location_name: remote_grpc_server
+     host: localhost
+     port: 4556

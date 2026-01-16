@@ -1,0 +1,85 @@
+[project]
+name = "dagster_master"
+version = "1.0.0"
+description = "Centralized orchestrator for all data pipelines"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  # Settings and configuration management
+  "pydantic-settings>=2.10.1",
+  # Dagster for data orchestration
+  "dagster>=1.11.4",
+]
+
+
+[dependency-groups]
+postgres = ["asyncpg>=0.30.0"]
+mysql = ["aiomysql>=0.2.0"]
+sqlite = ["aiosqlite>=0.21.0"]
+
+dev = [
+  # Linting
+  "ruff>=0.8.4",
+  # Testing
+  "pytest>=8.3.4",
+  "pytest-cov>=6.0.0",
+  "pytest-asyncio>=0.25.3",
+  # Dagster
+  "dagster-webserver>=1.11.4",
+  "dagster-postgres>=0.27.14",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 100
+indent-width = 2
+
+[tool.ruff.format]
+indent-style = "space"
+
+# Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "-v",
+  "-s",
+  "--cov=src",
+  "--cov-report=xml:.coverage/coverage.xml",
+  "--cov-report=html:.coverage/html",
+  "--cov-report=term-missing"
+]
+
+# Pytest coverage configuration
+[tool.coverage.run]
+source = ["src"]
+data_file = ".coverage/.coverage"
+branch = true
+omit = [
+    "*/site-packages/*",
+    "*/tests/*",
+    "*/.venv/*",
+    "*/__init__.py",
+    "*/dagster_definitions/*",
+]
+
+[tool.coverage.html]
+directory = ".coverage/html"
+
+[tool.coverage.xml]
+output = ".coverage/coverage.xml"
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+exclude_lines = [
+    "if __name__ == \"__main__\":"
+]

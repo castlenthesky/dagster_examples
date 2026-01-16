@@ -1,0 +1,109 @@
+[project]
+name = "my_project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  # API framework
+  "fastapi>=0.116.1",
+  # Settings and configuration management
+  "pydantic-settings>=2.10.1",
+  # Dagster for data orchestration
+  "dagster>=1.11.4",
+  # Database
+  "sqlalchemy>=2.0.42",
+  "sqlmodel>=0.0.27",
+  "aiofiles>=25.1.0",
+]
+
+
+[dependency-groups]
+postgres = ["asyncpg>=0.30.0"]
+mysql = ["aiomysql>=0.2.0"]
+sqlite = ["aiosqlite>=0.21.0"]
+
+dev = [
+  # Linting
+  "ruff>=0.8.4",
+  # Testing
+  "pytest>=8.3.4",
+  "pytest-cov>=6.0.0",
+  "pytest-asyncio>=0.25.3",
+  # Jupyter
+  "ipykernel>=6.29.5",
+  "ipywidgets>=8.1.5",
+  # Dagster
+  "dagster-webserver>=1.11.4",
+  "dagster-postgres>=0.27.14",
+  # Documentation Generation
+  "mkdocs>=1.6.1",
+  "mkdocs-material>=9.6.22",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 100
+indent-width = 2
+
+[tool.ruff.format]
+indent-style = "space"
+
+# Dagster configuration
+[tool.dg.project]
+code_location_name = "code_example"
+# Required: The root module of your project (base package name).
+# If your definitions are in src.dagster_definitions, this could be "src" if src is the package root.
+root_module = "src"
+# Optional: The submodule where the top-level Definitions object is located for loading as a code location.
+# This is the equivalent to pointing to your module in the old load_from syntax.
+# Defaults to <root_module>.definitions if omitted.
+# code_location_target_module = "src.definitions"
+
+
+# Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "-v",
+  "-s",
+  "--cov=src",
+  "--cov-report=xml:.coverage/coverage.xml",
+  "--cov-report=html:.coverage/html",
+  "--cov-report=term-missing"
+]
+
+# Pytest coverage configuration
+[tool.coverage.run]
+source = ["src"]
+data_file = ".coverage/.coverage"
+branch = true
+omit = [
+    "*/site-packages/*",
+    "*/tests/*",
+    "*/.venv/*",
+    "*/__init__.py",
+    "*/dagster_definitions/*",
+]
+
+[tool.coverage.html]
+directory = ".coverage/html"
+
+[tool.coverage.xml]
+output = ".coverage/coverage.xml"
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+exclude_lines = [
+    "if __name__ == \"__main__\":"
+]
