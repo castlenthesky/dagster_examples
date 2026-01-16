@@ -1,8 +1,12 @@
+
 # Project Overview
+
 
 [Dagster](https://dagster.io/) is a highly-configurable and powerful code orchestration platform (like Airflow [but with different design decisions](https://dagster.io/blog/dagster-airflow)). This project serves as an overview of how to self-host the dagster UI in a way that allows for orchestration of many smaller dagster deployments - from easy to complex, from local to distributed - all without a headache.
 
 **With this guide, you can have a distributed, and resilliant data orchestration platform with minimal effort and maximum understanding.**
+
+![Header](assets/dagster_header.jpg)
 
 *Why Dagster?*
 
