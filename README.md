@@ -1,6 +1,59 @@
+# Project Overview
+
+[Dagster](https://dagster.io/) is a highly-configurable and powerful code orchestration platform (like Airflow [but with different design decisions](https://dagster.io/blog/dagster-airflow)). This project serves as an overview of how to self-host the dagster UI in a way that allows for orchestration of many smaller dagster deployments - from easy to complex, from local to distributed - all without a headache.
+
+**With this guide, you can have a distributed, and resilliant data orchestration platform with minimal effort and maximum understanding.**
+
+*Why Dagster?*
+
+ Organizations have a growing set of interests across a growing variety of priorities that requires a growing number of systems to be linked together. Dagster is an orchestration platform that helps wrangle and make sense of that chaos. It provides a centralized hub where data teams and executives can inspect, and interogate their data pipelines to make sure everything is running smoothly. In short - it let's you Manage and Observe your data pipelines.
+
+# Overview of Dagster Features:
+## 1. Pipeline Health Summary
+
+Get a global overview of your data's health in a single view!
+
+![run_history](assets/run_history.png)
+![overview](assets/overview.png)
+
+## 2. Data Lineage View
+
+Easily trace where your data is coming from, where it is going, and how healthy those flows are.
+
+![lineage](assets/lineage.png)
+
+## 3. Lineage Health
+
+Individual assets and their links help track issues when your data pipeline isn't running as you'd expect.
+
+![example_dag](assets/example_dag.png)
+
+## 4. Data Quality Checks
+
+Test your data along the way. Simply business rule validation throughout your pipeline helps ensure the quality of the data being output.
+
+![quality_checks](assets/quality_checks.png)
+
+## 5. Automated Alerting
+
+Receive automated alerts via slack, MS Teams, discord, telegra, etc. whenever an individual asset or entire jobs fails.
+
+![alert](assets/alert.png)
+
+## And more!!!
+- Partitioning
+- Scheduling
+- Dynamic Job Triggering
+- Automatic Retry Policies
+- Freshness Warnings
+- Metadata Capture
+
+
 # Dagster Multi-Code-Location Orchestration Guide
 
-This repository demonstrates how to configure a single Dagster webserver and daemon to orchestrate code across multiple locations using different code location patterns. This is essential for managing complex data pipelines where code lives in separate repositories, containers, or environments.
+This repository demonstrates how to configure a single Dagster webserver and daemon to orchestrate code across various types of code locations and configuration methods. This is essential for managing complex data pipelines where code lives in separate repositories, containers, or environments.
+
+These patterns allow your organization to deploy many smaller data pipelines without having to create a monolithic system. Sales' data pipeline doesn't need to live in the same environment to the ML Ops pipeline.
 
 ## Project Structure
 
@@ -38,7 +91,9 @@ Copy the example environment file and configure your database connection:
 ```bash
 cd 00_master
 cp .env.EXAMPLE .env
-# Edit .env and set DAGSTER_DATABASE_URL
+# Optionally: Edit .env and set DAGSTER_DATABASE_URL
+# Database can be postgres or sqlite
+# Data will not persist after you close dagster without the .env
 ```
 
 ### 2. Start Remote Code Server (Optional - for gRPC example)
@@ -50,7 +105,7 @@ cd dagster_docker_test/docker
 docker compose up -d
 ```
 
-This starts a Dagster gRPC server on `localhost:4556`.
+This builds a docker container, launches a Dagster instance, and exposes the gRPC server on `localhost:4556`. The core service defined in `00_master` will look for the code in this example folder via that gRPC server.
 
 ### 3. Start the Central Webserver and Daemon
 
@@ -58,6 +113,9 @@ From the `00_master` directory:
 
 ```bash
 dagster dev -h 0.0.0.0 -p 4550 -w workspace.yaml
+# -h 0.0.0.0 listens from all hosts
+# -p 4550 specifys port 4550
+# -w workspace.yaml tells dagster which workspace file to load
 ```
 
 This starts:
@@ -68,7 +126,7 @@ The webserver reads `workspace.yaml` to discover all code locations and `dagster
 
 ---
 
-## Local Development: `[tool.dg]` in `pyproject.toml`
+## Local Code-Base Development: Use `[tool.dg]` in `pyproject.toml`
 
 For local development of individual code locations, you can configure Dagster directly in your `pyproject.toml` file using the `[tool.dg.project]` section. This eliminates the need for a `workspace.yaml` file when working on a single project, making development faster and simpler.
 
