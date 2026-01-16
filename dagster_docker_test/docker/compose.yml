@@ -8,8 +8,6 @@ services:
     container_name: dagster_docker_example
     ports:
       - "4556:4000"  # gRPC server port
-    env_file:
-      - ../.env
     volumes:
       - ../src:/app/src:ro
     restart: unless-stopped

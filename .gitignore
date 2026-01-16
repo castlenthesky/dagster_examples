@@ -4,7 +4,8 @@
 .ruff_cache/
 .mypy_cache/
 .vscode/
-
+.tmp*/
+.data*/
 
 .env*
 !.env.EXAMPLE
