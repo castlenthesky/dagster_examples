@@ -23,3 +23,20 @@ schedule_storage:
   config:
     postgres_url:
       env: DAGSTER_DATABASE_URL
+
+# need to configure the compute logs and artifact storage
+# Production deployments should use a cloud-based storage solution like S3 or Minio
+# Here we use the local filesystem for development purposes
+# You need to be sure /opt/dagster/dagster_home/storage/compute_logs 
+# and /opt/dagster/dagster_home/storage/artifacts exist and are writable by the appuser
+compute_logs:
+  module: dagster.core.storage.local_compute_log_manager
+  class: LocalComputeLogManager
+  config:
+    base_dir: "/opt/dagster/dagster_home/storage/compute_logs"
+
+local_artifact_storage:
+  module: dagster.core.storage.root
+  class: LocalArtifactStorage
+  config:
+    base_dir: "/opt/dagster/dagster_home/storage/artifacts"

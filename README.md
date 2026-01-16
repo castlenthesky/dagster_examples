@@ -290,6 +290,50 @@ schedule_storage:
       env: DAGSTER_DATABASE_URL
 ```
 
+### Compute Logs and Artifact Storage
+
+In addition to database-backed storage, Dagster requires explicit configuration for compute logs and artifact storage. This is **critical for remote and Docker deployments**.
+
+**Configuration:**
+```yaml
+compute_logs:
+  module: dagster.core.storage.local_compute_log_manager
+  class: LocalComputeLogManager
+  config:
+    base_dir: "/opt/dagster/dagster_home/storage/compute_logs"
+
+local_artifact_storage:
+  module: dagster.core.storage.root
+  class: LocalArtifactStorage
+  config:
+    base_dir: "/opt/dagster/dagster_home/storage/artifacts"
+```
+
+**Why This Configuration Is Necessary:**
+
+Without explicit storage directory configuration, Dagster defaults to using the directory from which it was launched (often the user's home directory or project root). This causes several problems in remote and containerized deployments:
+
+- **Permission Issues**: The default directory may not be writable by the Dagster process user in containers
+- **Path Conflicts**: Different environments (host vs. container) may have different working directories, causing storage location mismatches
+- **Persistence Problems**: Files written to ephemeral or unexpected locations may be lost or inaccessible
+- **Security Concerns**: Writing to user home directories or project roots can expose sensitive data or conflict with other processes
+
+**The Solution:**
+
+Using `/opt/dagster/dagster_home` as the base directory provides:
+- **Consistent Paths**: The same path works in both container and host filesystem contexts
+- **Proper Permissions**: A dedicated directory that can be configured with appropriate ownership and permissions
+- **Isolation**: Storage is separated from application code and user directories
+- **Convention**: Follows standard practices for application data directories
+
+**Requirements:**
+
+The storage directories must exist and be writable by the Dagster process:
+- `/opt/dagster/dagster_home/storage/compute_logs` - Stores execution logs
+- `/opt/dagster/dagster_home/storage/artifacts` - Stores pipeline artifacts
+
+**Note**: For production deployments, consider using cloud-based storage solutions (S3, GCS, Azure Blob) instead of local filesystem storage for better scalability and reliability.
+
 ### Environment Variable Configuration
 
 The `env: DAGSTER_DATABASE_URL` syntax tells Dagster to read the value from an environment variable. This keeps sensitive credentials out of version control.
